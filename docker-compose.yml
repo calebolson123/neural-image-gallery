@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+    volumes:
+      - ./app:/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - minio
+    command: >
+      sh -c "python backend/manage.py migrate &&
+             python backend/manage.py runserver 0.0.0.0:8000"      
+
+  minio:
+    image: minio/minio
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      - MINIO_ACCESS_KEY=access-key
+      - MINIO_SECRET_KEY=secret-key
+      - MINIO_ROOT_USER=access-key
+      - MINIO_ROOT_PASSWORD=secret-key
+    command: server /export --console-address ":9001"
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      apk add nc &&
+      while ! nc -z minio 9000; do echo 'Wait minio to startup...' && sleep 0.1; done; sleep 5 &&
+      /usr/bin/mc config host add myminio http://minio:9000 access-key secret-key;
+      /usr/bin/mc mb myminio/gallery;
+      /usr/bin/mc policy download myminio/gallery;
+      exit 0;
+      "
