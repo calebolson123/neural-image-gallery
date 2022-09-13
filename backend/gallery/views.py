@@ -6,6 +6,8 @@ from .models import Image
 from .caption_service import CaptionService
 from rest_framework import status
 from rest_framework.response import Response
+from io import BytesIO
+from django.core.files.base import ContentFile
 
 # Create your views here.
 class GalleryView(viewsets.ModelViewSet):
@@ -14,11 +16,18 @@ class GalleryView(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Override create method and generate caption based on image(s) data
-        placing caption on request object beforing continuing to super
+        Override create method and generate captions for passed image(s) data
+        and continue to save, returning updated list of all Images
         """ 
 
-        # TODO: validate payload somewhere, read up on where makes most sense in django
+        # TODO: validate payload on entry and exit, read up on where makes most sense in django
 
-        request = CaptionService(self.request).generate_caption()
-        return super().create(request, *args, **kwargs)
+        files = self.request.FILES.getlist('file')
+        for f in files:
+            img_data: bytes = BytesIO(f.read())
+            caption: str = CaptionService().classify_img(img_data)
+            Image.objects.create(file=f, caption=caption)
+
+        images = Image.objects.all()
+        serializer = GallerySerializer(images, many=True)
+        return Response(serializer.data)
