@@ -26,8 +26,10 @@ SECRET_KEY = 'django-insecure-c13zp=a@=if-zo-1ww2wezi7rje9vf$8tr%n(+ya5a_s1wps28
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+# whitelist frontend
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000'
+]
 
 # Application definition
 
@@ -41,17 +43,18 @@ INSTALLED_APPS = [
     'gallery',
     'corsheaders',
     'rest_framework',
+    'django_minio_backend',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -137,7 +140,13 @@ AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME", "gallery")
 if DEBUG:
     AWS_S3_ENDPOINT_URL = "http://minio:9000"
 
-# whitelist frontend
-CORS_ORIGIN_WHITELIST = [
-     'http://localhost:3000'
+MINIO_ENDPOINT = "localhost:9000"
+MINIO_EXTERNAL_ENDPOINT = "127.0.0.1:9000"
+MINIO_EXTERNAL_ENDPOINT_USE_HTTPS = False
+
+MINIO_PRIVATE_BUCKETS = [
+    'gallery',
 ]
+MINIO_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID", "access-key")
+MINIO_SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY", "secret-key")
+MINIO_USE_HTTPS = False
