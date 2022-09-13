@@ -13,7 +13,8 @@ services:
     depends_on:
       - minio
     command: >
-      sh -c "python manage.py migrate &&
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
              python manage.py runserver 0.0.0.0:8000"      
 
   minio:
@@ -32,10 +33,8 @@ services:
       - minio
     entrypoint: >
       /bin/sh -c "
-      apk add nc &&
-      while ! nc -z minio 9000; do echo 'Wait minio to startup...' && sleep 0.1; done; sleep 5 &&
       /usr/bin/mc config host add myminio http://minio:9000 access-key secret-key;
       /usr/bin/mc mb myminio/gallery;
-      /usr/bin/mc policy download myminio/gallery;
+      /usr/bin/mc policy public myminio/gallery;
       exit 0;
       "
