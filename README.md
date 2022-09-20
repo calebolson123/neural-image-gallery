@@ -1,6 +1,6 @@
 # Neural Image Gallery Challenge
 
-This repo contains a full stack application satisfying the requirements detailed at the bottom of this document. The sequence diagram below provides an overview of the architecture and flow-of-data within the application.
+This repo contains a full stack application satisfying the requirements detailed at the bottom of this document. The sequence diagram below provides an overview of the architecture and flow-of-data within the application. This implementation was timeboxed to 8 hours.
 
 ![sequence diagram](diagrams/image-upload-sequence.png)
 
@@ -48,6 +48,7 @@ Depending on your setup, you may need to additionally run:
 To download model weights
 
 <br/><br/>
+
 ## Requirements:
 
 Challenge: Design a webapp that hosts a gallery of images along with a machine-learning generated caption for each image.
@@ -64,3 +65,16 @@ Implementation guidelines:
 - Use Python for the server backend. Use any framework and database you would like.
 - Use React and TypeScript in the frontend
 - Implementing users and authentication is optional. Feel free to add if you have time, but it’s not the focus of this exercise.
+
+
+## Comments/Next steps
+
+Given more time, what I would do next includes:
+•	Testing (unit, integration, and migration tests)
+•	Static type checking server side, and better typing in general
+•	linters front and back
+•	Auth
+A couple notes:
+•	I chose to add an object storage service (MinIO) for storing larger unstructured data (images)
+•	I chose to use Django as the Python backend framework as an excuse to get exposed to it. This was my first time ever touching Django
+•	Within the app, image upload is intuitive enough. But to delete an image, just click on it
