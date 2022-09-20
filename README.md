@@ -74,6 +74,7 @@ Given more time, what I would do next includes:
 - Static type checking server side, and better typing in general
 - linters front and back
 - Auth
+
 A couple notes:
 - I chose to add an object storage service (MinIO) for storing larger unstructured data (images)
 - I chose to use Django as the Python backend framework as an excuse to get exposed to it. This was my first time ever touching Django
